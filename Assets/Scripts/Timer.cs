@@ -3,28 +3,41 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-        private Action _completeCallback;
-        private bool _isStarted;
-        private float _time;
-       
+    #region Variables
 
-        private void Update()
-        {
-                if (!_isStarted)
-                        return;
-                _time -= Time.deltaTime;
-                
-                if (_time<0)
-                {
-                        _isStarted = false;
-                        _completeCallback?.Invoke();
-                }
-}
+    private Action _completeCallback;
+    private bool _isStarted;
+    private float _time;
 
-        public void StartTimer(float time, Action completeCallback)
+    #endregion
+
+
+    #region Unity lifecycle
+
+    private void Update()
+    {
+        if (!_isStarted)
+            return;
+        _time -= Time.deltaTime;
+
+        if (_time < 0)
         {
-                _completeCallback = completeCallback;
-                _isStarted = true;
-                _time = time;
+            _isStarted = false;
+            _completeCallback?.Invoke();
         }
+    }
+
+    #endregion
+
+
+    #region Public metods
+
+    public void StartTimer(float time, Action completeCallback)
+    {
+        _completeCallback = completeCallback;
+        _isStarted = true;
+        _time = time;
+    }
+
+    #endregion
 }

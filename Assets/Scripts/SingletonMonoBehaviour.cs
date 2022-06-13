@@ -2,7 +2,14 @@
 
 public class SingletonMonoBehaviour<T> : MonoBehaviour
 {
+    #region Properties
+
     public static T Instance { get; private set; }
+
+    #endregion
+
+
+    #region Unity lifecycle
 
     protected virtual void Awake()
     {
@@ -15,4 +22,6 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour
         Instance = GetComponent<T>();
         DontDestroyOnLoad(gameObject);
     }
+
+    #endregion
 }

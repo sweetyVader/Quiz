@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class QuizGame : MonoBehaviour
 {
+    #region Variables
+
     [Header("Button answers")]
     [SerializeField] private Button _firstAnswerButton;
     [SerializeField] private Button _secondAnswerButton;
@@ -19,63 +19,83 @@ public class QuizGame : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _thirdAnswerLabel;
     [SerializeField] private TextMeshProUGUI _fourthAnswerLabel;
 
+    [Header(" ")]
     [SerializeField] private TextMeshProUGUI _lifeLabel;
 
+    [Header("Image question")]
     [SerializeField] private Image _questionImage;
 
+    [Header("List questions")]
     [SerializeField] private Question[] _allQuestions;
+
+    [Header("Helper")]
     [SerializeField] private Button _helpButton;
 
     private int _choiceIndex;
     private int _life = 3;
-    private bool _isEnd = false;
     private int _maxQuestions;
-
-   // private int _button;
     private int _idButton;
-  private readonly List<Button> _buttons = new List<Button>();
 
-  public Timer _timer;
-     
+    private readonly List<Button> _buttons = new List<Button>();
+
+    private Timer _timer;
+
+    #endregion
+
+
+    #region Properties
+
+    public static int Right { get; private set; }
+    public static int Wrong { get; private set; }
+
+    #endregion
+
+
+    #region Unity lifecycle
+
+    private void Awake()
+    {
+        _firstAnswerButton.onClick.AddListener(delegate { CheckAnswer(1); });
+        _secondAnswerButton.onClick.AddListener(delegate { CheckAnswer(2); });
+        _thirdAnswerButton.onClick.AddListener(delegate { CheckAnswer(3); });
+        _fourthAnswerButton.onClick.AddListener(delegate { CheckAnswer(4); });
+        _helpButton.onClick.AddListener(HelperButton);
+    }
+
     private void Start()
     {
-        Mix();
-        _maxQuestions = _allQuestions.Length;
+        MixQuestions();
 
+        _maxQuestions = _allQuestions.Length;
         Right = 0;
         Wrong = 0;
+
         SetQuestion(_allQuestions[_choiceIndex]);
-        
-        
-      _buttons.Add(_firstAnswerButton);
-      _buttons.Add(_secondAnswerButton);
-      _buttons.Add(_thirdAnswerButton);
-      _buttons.Add(_fourthAnswerButton);
-     
-      _firstAnswerButton.onClick.AddListener(delegate { CheckAnswer(1); });
-      _secondAnswerButton.onClick.AddListener(delegate { CheckAnswer(2); });
-      _thirdAnswerButton.onClick.AddListener(delegate { CheckAnswer(3); });
-      _fourthAnswerButton.onClick.AddListener(delegate { CheckAnswer(4); });
-      _helpButton.onClick.AddListener(HelperButton);
-      
-      
+
+        _buttons.Add(_firstAnswerButton);
+        _buttons.Add(_secondAnswerButton);
+        _buttons.Add(_thirdAnswerButton);
+        _buttons.Add(_fourthAnswerButton);
     }
+
+    private void Update()
+    {
+        _lifeLabel.text = _life.ToString();
+        CheckGameOver();
+    }
+
+    #endregion
+
+
+    #region Private metods
 
     private void SetQuestion(Question question)
     {
-        
-       // Thread.Sleep(2000);
-    /*   foreach (var i in buttons)
-        {
-            i.image.color = Color.white;
-        }*/
-    
         _firstAnswerLabel.text = question.FirstAnswerText;
         _secondAnswerLabel.text = question.SecondAnswerText;
         _thirdAnswerLabel.text = question.ThirdAnswerText;
         _fourthAnswerLabel.text = question.FourthAnswerText;
         _questionImage.sprite = question.AksQuestionImage;
-        
     }
 
     private void CheckAnswer(int answer)
@@ -84,41 +104,25 @@ public class QuizGame : MonoBehaviour
         {
             Right++;
             _buttons[answer - 1].image.color = Color.green;
-
-
         }
         else
         {
             Wrong++;
             _life--;
             _buttons[answer - 1].image.color = Color.red;
+            _buttons[_allQuestions[_choiceIndex].SetRightAnswer - 1].image.color = Color.green;
         }
-
 
         _choiceIndex++;
 
         if (_choiceIndex < _maxQuestions)
-
-
         {
-            
-           // _timer.StartTimer(2.5f, ResetButton);
-            SetQuestion(_allQuestions[_choiceIndex]);
+            EnableButton();
+            Invoke(nameof(ResetButton), 2f);
+            //_timer.StartTimer(2.5f, ResetButton);
         }
-    else
-
-    SceneLoader.Instance.LoadScene("EndScene");
-    }
-
-    private void Update()
-    {
-        if (_isEnd)
-            return;
-        
-       
-
-        _lifeLabel.text = _life.ToString();
-        CheckGameOver();
+        else
+            SceneLoader.Instance.LoadScene("EndScene");
     }
 
     private void CheckGameOver()
@@ -126,16 +130,9 @@ public class QuizGame : MonoBehaviour
         if (Wrong < 3)
             return;
         SceneLoader.Instance.LoadScene("EndScene");
-        _isEnd = true;
     }
 
-    private bool IsIndexValid(int choiceIndex) =>
-        choiceIndex >= 0;
-
-    public static int Right { get; private set; }
-    public static int Wrong { get; private set; }
-
-    private void Mix()
+    private void MixQuestions()
     {
         System.Random random = new System.Random();
         for (int i = _allQuestions.Length - 1; i >= 1; i--)
@@ -150,10 +147,9 @@ public class QuizGame : MonoBehaviour
         int q = 0;
         for (int i = 0; i < _buttons.Count & q < 2; i++)
         {
-            if (i+1 == _allQuestions[_choiceIndex].SetRightAnswer)
+            if (i + 1 == _allQuestions[_choiceIndex].SetRightAnswer)
                 continue;
-            _buttons[i].enabled = false;
-            _buttons[i].image.color = Color.black;
+            _buttons[i].gameObject.SetActive(false);
             q++;
         }
     }
@@ -163,8 +159,23 @@ public class QuizGame : MonoBehaviour
         foreach (var i in _buttons)
         {
             i.image.color = Color.white;
+            i.gameObject.SetActive(true);
             i.enabled = true;
         }
+
+        _helpButton.enabled = true;
+        SetQuestion(_allQuestions[_choiceIndex]);
     }
-    
+
+    private void EnableButton()
+    {
+        foreach (var i in _buttons)
+        {
+            i.enabled = false;
+        }
+
+        _helpButton.enabled = false;
+    }
+
+    #endregion
 }

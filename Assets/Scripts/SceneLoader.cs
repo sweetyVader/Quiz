@@ -2,6 +2,8 @@
 
 public class SceneLoader : SingletonMonoBehaviour<SceneLoader>
 {
+    #region Public metods
+
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
@@ -11,4 +13,6 @@ public class SceneLoader : SingletonMonoBehaviour<SceneLoader>
     {
         SceneManager.LoadScene(sceneIndex);
     }
+
+    #endregion
 }

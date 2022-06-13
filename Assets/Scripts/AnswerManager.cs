@@ -2,8 +2,15 @@
 
 public class AnswerManager : MonoBehaviour
 {
+    #region Variables
+
     public int RightAnswers;
     public int WrongAnswers;
+
+    #endregion
+
+
+    #region Unity lifecycle
 
     private void Awake()
     {
@@ -15,4 +22,6 @@ public class AnswerManager : MonoBehaviour
         RightAnswers = QuizGame.Right;
         WrongAnswers = QuizGame.Wrong;
     }
+
+    #endregion
 }
