@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffb9f71d2135413dada7578b415fffe2, type: 3}
+  m_Name: Question 17
+  m_EditorClassIdentifier: 
+  _aksQuestionImage: {fileID: 21300000, guid: 6f7b9dd974078b847a2526c4d20d5ef7, type: 3}
+  _firstAnswerText: "\u0414\u0443\u0448\u0430"
+  _secondAnswerText: "\u0421\u0435\u043A\u0440\u0435\u0442"
+  _thirdAnswerText: "\u0414\u0435\u043D\u044C\u0433\u0438"
+  _fourthAnswerText: "U\u043C\u044F"
+  _rightAnswer: 4
